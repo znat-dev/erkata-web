@@ -1,17 +1,24 @@
-// index.js
-const twilio = require('twilio');
+const functions = require("firebase-functions");
+const twilio = require("twilio");
 
-// Replace these with your actual credentials from Twilio console
-const accountSid = 'REMOVED';
-const authToken = 'REMOVED';
-const client = twilio(accountSid, authToken);
+// 🔐 Replace with your actual Twilio credentials
+const accountSid = "REMOVED";
+const authToken = "REMOVED";
+const client = new twilio(accountSid, authToken);
 
-// Your message details
-client.messages
-  .create({
-    body: 'Hello! This is a test SMS from my local Node.js script 🚀',
-    from: '+18144822540',  // Your Twilio phone number
-    to: '+251923770049'     // Recipient's phone number (Ethiopia)
-  })
-  .then(message => console.log(`✅ Message sent! SID: ${message.sid}`))
-  .catch(error => console.error(`❌ Failed to send message: ${error.message}`));
+// 🚀 Cloud Function to send SMS
+exports.sendSMS = functions.https.onCall(async (data, context) => {
+  const phone = data.phone;
+  const message = data.message;
+
+  try {
+    const response = await client.messages.create({
+      body: message,
+      to: phone,       // recipient phone number
+      from: "+18144822540" // your Twilio number
+    });
+    return { success: true, sid: response.sid };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+});
