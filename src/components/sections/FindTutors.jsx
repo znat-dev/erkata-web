@@ -14,7 +14,7 @@ export const FindTutors = () => {
       field: "Mathematics",
       location: "Addis Ababa",
       cost: "200br/hr",
-      image: "/images/abel.png"
+      image: "/images/abel.jpg"
     },
     {
       id: 2,
@@ -22,7 +22,7 @@ export const FindTutors = () => {
       field: "Physics",
       location: "Addis Ababa",
       cost: "250br/hr",
-      image: "/images/sara.png"
+      image: "/images/sara.jpg"
     },
     {
       id: 3,
@@ -150,27 +150,26 @@ export const FindTutors = () => {
                             }
                             setContactError(""); // clear error if valid
                             
-                          
                              // Helper to send SMS via your backend API
-                          async function sendSMS(phone, message) {
-                            try {
-                              const response = await fetch('http://localhost:3000/send-sms', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ phone, message }),
-                              });
-                              const data = await response.json();
-                              if (!data.success) {
-                                throw new Error(data.error || 'Failed to send SMS');
-                              }
-                              return true;
-                            } catch (err) {
-                              console.error('SMS sending error:', err);
-                              return false;
+                        async function sendSMS(phone, message) {
+                          try {
+                            const response = await fetch('http://localhost:3000/send-sms', {
+                              method: 'POST',
+                              headers: { 'Content-Type': 'application/json' },
+                              body: JSON.stringify({ phone, message }),
+                            });
+                            const data = await response.json();
+                            if (!data.success) {
+                              throw new Error(data.error || 'Failed to send SMS');
                             }
+                            return true;
+                          } catch (err) {
+                            console.error('SMS sending error:', err);
+                            return false;
                           }
+                        }
 
-
+                          
                             try {
                               await addDoc(collection(db, "tutor_bookings"), {
                                 tutorName: selectedTutor.name,
