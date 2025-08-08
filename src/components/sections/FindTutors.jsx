@@ -14,7 +14,7 @@ export const FindTutors = () => {
       field: "Mathematics",
       location: "Addis Ababa",
       cost: "200br/hr",
-      image: "/images/abel.jpg"
+      image: "/images/abel.png"
     },
     {
       id: 2,
@@ -22,7 +22,7 @@ export const FindTutors = () => {
       field: "Physics",
       location: "Addis Ababa",
       cost: "250br/hr",
-      image: "/images/sara.jpg"
+      image: "/images/sara.png"
     },
     {
       id: 3,
@@ -151,6 +151,26 @@ export const FindTutors = () => {
                             setContactError(""); // clear error if valid
                             
                           
+                             // Helper to send SMS via your backend API
+                          async function sendSMS(phone, message) {
+                            try {
+                              const response = await fetch('http://localhost:3000/send-sms', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ phone, message }),
+                              });
+                              const data = await response.json();
+                              if (!data.success) {
+                                throw new Error(data.error || 'Failed to send SMS');
+                              }
+                              return true;
+                            } catch (err) {
+                              console.error('SMS sending error:', err);
+                              return false;
+                            }
+                          }
+
+
                             try {
                               await addDoc(collection(db, "tutor_bookings"), {
                                 tutorName: selectedTutor.name,
@@ -179,6 +199,15 @@ export const FindTutors = () => {
                                   },
                                   '6SeqJNCvuUWqSo5ut'
                                 );
+                              } else {
+                                // Send SMS for phone numbers
+                                const smsMessage = `Hello ${userName}, your booking for ${selectedTutor.name} (${selectedTutor.field}) has been received. We will contact you soon.`;
+                                const smsSent = await sendSMS(contactInfo, smsMessage);
+                          
+                                if (!smsSent) {
+                                  setSuccessMessage('❌ Failed to send SMS notification.');
+                                  return;
+                                }
                               }
 
                               setSuccessMessage("✅ Booking submitted successfully!");
