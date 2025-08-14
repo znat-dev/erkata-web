@@ -153,11 +153,12 @@ export const FindTutors = () => {
                              // Helper to send SMS via your backend API
                         async function sendSMS(phone, message) {
                           try {
-                            const response = await fetch('http://localhost:3000/send-sms', {
+                            const response = await fetch('/api/send-sms', {
                               method: 'POST',
                               headers: { 'Content-Type': 'application/json' },
-                              body: JSON.stringify({ phone, message }),
+                              body: JSON.stringify({ phone, message })
                             });
+                            
                             const data = await response.json();
                             if (!data.success) {
                               throw new Error(data.error || 'Failed to send SMS');
