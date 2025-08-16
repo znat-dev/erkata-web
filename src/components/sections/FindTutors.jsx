@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { RevealOnScroll } from '../RevealOnScroll';
 import { db } from '../../firebase.js';
 import { collection, addDoc } from "firebase/firestore";
-import emailjs from "emailjs-com";
+import emailjs from '@emailjs/browser';
 
 
 export const FindTutors = () => {
